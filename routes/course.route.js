@@ -10,5 +10,11 @@ router.post(
     CourseController.createCourse
 )
 
+router.get(
+    '/load_courses',
+    AuthMiddleware,
+    CourseController.loadCourses
+)
+
 
 module.exports = router

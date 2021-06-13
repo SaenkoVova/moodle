@@ -10,5 +10,22 @@ router.post(
     GroupController.createGroup
 )
 
+router.get(
+    '/load_groups',
+    AuthMiddleware,
+    GroupController.loadGroups
+)
+
+router.get(
+    '/load_group_students',
+    AuthMiddleware,
+    GroupController.loadGroupStudents
+)
+
+router.get(
+    '/load_group_courses',
+    AuthMiddleware,
+    GroupController.loadGroupCourses
+)
 
 module.exports = router

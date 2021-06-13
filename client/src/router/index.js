@@ -6,6 +6,7 @@ import Dashboard from "../views/Dashboard";
 import CreateUser from "../views/CreateUser";
 import CreateClass from "../views/CreateClass";
 import CreateCourse from "../views/CreateCourse";
+import GroupDetails from "../views/GroupDetails";
 
 Vue.use(VueRouter)
 
@@ -51,6 +52,15 @@ const routes = [
       requiredAuth: true
     },
     component: CreateCourse
+  },
+  {
+    path: '/group/:id',
+    name: 'GroupDetails',
+    meta: {
+      requiredAuth: true
+    },
+    props: true,
+    component: GroupDetails
   }
 ]
 

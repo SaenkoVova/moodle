@@ -24,7 +24,14 @@
               outlined
               :rules="[rules.required]"
           ></v-select>
-          <v-btn large block color="primary" type="submit" :disabled="!valid || !selectedStudents.length || !teacherEmail">Створити клас</v-btn>
+          <v-select
+              @change="addCourse"
+              :items="courses"
+              label="Оберіть предмети"
+              outlined
+              :rules="[rules.required]"
+          ></v-select>
+          <v-btn large block color="primary" type="submit" :disabled="!valid || !selectedStudents.length || !teacherEmail || !selectedCourses">Створити клас</v-btn>
         </v-form>
       </v-col>
       <v-col :cols="7">
@@ -37,6 +44,7 @@
           </h2>
         </div>
         <div v-if="selectedStudents.length">
+          <h2 class="title">Список учнів класу</h2>
           <v-simple-table>
             <template v-slot:default>
               <thead>
@@ -69,6 +77,32 @@
             </template>
           </v-simple-table>
         </div>
+        <div v-if="selectedCourses.length">
+          <h2 class="title">Список предметів</h2>
+          <v-simple-table>
+            <template v-slot:default>
+              <thead>
+              <tr>
+                <th class="text-left">
+                  Ідентифікатор
+                </th>
+                <th class="text-left">
+                  Назва
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr
+                  v-for="(item, index) in selectedCourses"
+                  :key="index"
+              >
+                <td>{{ item.id }}</td>
+                <td>{{ item.title }}</td>
+              </tr>
+              </tbody>
+            </template>
+          </v-simple-table>
+        </div>
       </v-col>
     </v-row>
   </v-container>
@@ -94,7 +128,9 @@
       teacherEmail: null,
       students: [],
       teachers: [],
+      courses: [],
       selectedStudents: [],
+      selectedCourses: [],
       valid: false
     }),
     computed: {
@@ -118,6 +154,19 @@
         }
         this.selectedStudents.push(payload)
       },
+      addCourse(val) {
+        let details = val.split(' ');
+        let candidate = this.selectedCourses.find(i => i.id === details[0])
+        if(candidate) {
+          alert('Ви вже додали курс в список');
+          return;
+        }
+        const payload = {
+          id: details.splice(0, 1)[0],
+          title: details.join(' ')
+        }
+        this.selectedCourses.push(payload)
+      },
       addClassTeacher(val) {
         let details = val.split(' ');
         this.teacherFirstName = details[0];
@@ -129,6 +178,12 @@
         http.get('/user/load_students')
           .then(res => {
             this.students = res.data.map(i => `${i.secondName} ${i.firstName} ${i.thirdName} ${i.email}`)
+          })
+      },
+      loadCourses() {
+        http.get('/course/load_courses')
+          .then(res => {
+            this.courses = res.data.map(i => `${i._id} ${i.title}`);
           })
       },
       loadTeachers() {
@@ -146,7 +201,8 @@
             email: this.teacherEmail
           },
           classSymbol: this.classSymbol,
-          students: this.selectedStudents
+          students: this.selectedStudents,
+          courses: this.selectedCourses
         }
         http.post('/group/create_group', payload)
           .then(res => {
@@ -160,6 +216,7 @@
     mounted() {
       this.loadStudents();
       this.loadTeachers();
+      this.loadCourses();
     }
   }
 </script>
