@@ -22,10 +22,4 @@ router.post(
     AuthController.signIn
 )
 
-router.get(
-    '/authstatechange',
-    AuthMiddleware,
-    AuthController.authStateChanged
-)
-
 module.exports = router

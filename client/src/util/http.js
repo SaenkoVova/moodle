@@ -13,8 +13,7 @@ const http = axios.create({
 http.axios = axios;
 
 const PUBLIC_URLS = [
-    'register/',
-    'login/'
+    '/auth/signin'
 ]
 
 http.interceptors.request.use((config) => {
@@ -30,6 +29,7 @@ http.interceptors.request.use((config) => {
     return config;
 }, () => {
     store.commit('user/unsetUser');
+    store.commit('user/unsetToken');
     if(router.currentRoute.meta.requiresAuth) {
         router.push('/')
     }
@@ -40,11 +40,13 @@ http.interceptors.response.use(
     error => {
         if(error.message === 'USER_CANCEL') {
             store.commit('user/unsetUser');
-            return Promise.reject()
+            store.commit('user/unsetToken');
+            return Promise.reject(error)
         }
-        let status = error.response?.data.status || 403
-        if(status === 403) {
+        let status = error.response.status
+        if(status === 401) {
             store.commit('user/unsetUser');
+            store.commit('user/unsetToken');
             if(router.currentRoute.meta.requiredAuth) {
                 router.push('/')
             }

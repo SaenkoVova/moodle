@@ -72,10 +72,7 @@ exports.signIn = async (req, res) => {
             config.get('jwtSecret'),
             {expiresIn: '1h'}
         );
-        await res.json({
-            token,
-            name: user.name
-        });
+        await res.json({token});
     } catch(e) {
         res.status(500).json({message: 'Щось пішло не так, спробуйте знову'});
     }
