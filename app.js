@@ -2,22 +2,27 @@ const express = require('express');
 const app = express();
 const config = require('config');
 const mongoose = require('mongoose');
+const fileUpload = require("express-fileupload");
 const cors = require('cors');
 const path = require('path');
 const AuthRoute = require('./routes/auth.route');
 const UserRoute = require('./routes/user.route');
 const GroupRoute = require('./routes/group.route');
 const CourseRoute = require('./routes/course.route');
+const TaskRoute = require('./routes/task.route');
 
 const PORT = config.get('port') || 3000;
 
 app.use(cors());
 app.use(express.json({ extended: true }));
+app.use(fileUpload());
+app.use(express.static('storage'));
 
 app.use('/api/auth', AuthRoute);
 app.use('/api/user', UserRoute);
 app.use('/api/group', GroupRoute);
 app.use('/api/course', CourseRoute);
+app.use('/api/task', TaskRoute);
 
 
 if(process.env.NODE_ENV === 'production') {

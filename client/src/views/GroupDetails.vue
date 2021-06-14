@@ -1,6 +1,5 @@
 <template>
-  <v-container>
-    <h1>Group details</h1>
+  <v-container fluid class="pa-5">
     <v-row>
       <v-col>
         <h2 class="title">Список учнів класу</h2>
@@ -17,6 +16,9 @@
               <th class="text-left">
                 По батькові
               </th>
+              <th class="text-left">
+                Електронна адреса
+              </th>
             </tr>
             </thead>
             <tbody>
@@ -27,6 +29,7 @@
               <td>{{ item.firstName }}</td>
               <td>{{ item.secondName }}</td>
               <td>{{ item.thirdName }}</td>
+              <td>{{ item.email }}</td>
             </tr>
             </tbody>
           </template>
@@ -53,7 +56,7 @@
             >
               <td>{{ item.title }}</td>
               <td>
-                <add-task></add-task>
+                <add-task :courseId="item._id" :groupId="id"></add-task>
               </td>
             </tr>
             </tbody>

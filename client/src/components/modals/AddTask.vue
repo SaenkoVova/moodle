@@ -29,38 +29,74 @@
           <v-icon>mdi-close</v-icon>
         </v-btn>
         <v-toolbar-title>Додати завдання</v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-toolbar-items>
-          <v-btn
-              dark
-              text
-              @click="dialog = false"
-          >
-            Зберегти
-          </v-btn>
-        </v-toolbar-items>
       </v-toolbar>
       <div class="pa-5">
-        <v-text-field
-          outlined
-          placeholder="Назва завдання"
-        />
-        <v-textarea
-            outlined
-            placeholder="Опис завдання"
-        />
+        <v-form @submit.prevent="addTask" v-model="valid">
+          <v-text-field
+              outlined
+              placeholder="Назва завдання"
+              v-model="title"
+          />
+          <v-textarea
+              outlined
+              placeholder="Опис завдання"
+              v-model="description"
+          />
+          <v-file-input
+              @change="setFiles"
+              counter
+              show-size
+              truncate-length="15"
+              outlined
+              placeholder="Завантажте методичні рекомендації"
+          ></v-file-input>
+          <v-btn :disabled="!valid" color="primary" block large @click="addTask">Додати завдання</v-btn>
+        </v-form>
       </div>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
+  import http from "../../util/http";
+
   export default {
+    props: {
+      courseId: {
+        type: String,
+        required: true
+      },
+      groupId: {
+        type: String,
+        required: true
+      }
+    },
     data: () => ({
       dialog: false,
-      notifications: false,
-      sound: true,
-      widgets: false,
-    })
+      title: '',
+      description: '',
+      file: null,
+      valid: false
+    }),
+    methods: {
+      setFiles(event) {
+        this.file = event;
+      },
+      addTask() {
+        let formData = new FormData()
+        formData.append('multipartFile', this.file);
+        formData.append('title', this.title);
+        formData.append('description', this.description);
+        http.post('/task/create_task', formData, {
+          params: {
+            courseId: this.courseId,
+            groupId: this.groupId
+          },
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+      }
+    }
   }
 </script>

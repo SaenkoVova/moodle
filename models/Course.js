@@ -5,7 +5,7 @@ const schema = new Schema({
     title: {type: String, required: true},
     teachers: [{type: ObjectId, ref: 'User'}],
     students: [{type: ObjectId, ref: 'User'}],
-    description: [{type: String, required: true}],
+    description: {type: String, required: true},
     groups: [{type: ObjectId, ref: 'Group'}],
     tasks: [{type: ObjectId, ref: 'Task'}]
 })

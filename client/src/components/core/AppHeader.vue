@@ -5,27 +5,32 @@
       dark
   >
     <div class="d-flex align-center">
-      <h1>My moodle</h1>
+      <router-link :to="'/dashboard'" style="color: #fff; text-decoration: none">
+        <h1>My moodle</h1>
+      </router-link>
     </div>
+    <v-toolbar color="primary" elevation="0">
+      <v-spacer></v-spacer>
+      <v-toolbar-items v-if="!isAuthorized">
+        <v-btn v-for="(item, index) in unauthorizedMenu" :key="index" :to="item.path" large>
+          {{item.title}}
+        </v-btn>
+      </v-toolbar-items>
 
-    <v-spacer></v-spacer>
-
-    <div v-if="!isAuthorized">
-      <v-btn v-for="(item, index) in unauthorizedMenu" :key="index" :to="item.path" large>
-        {{item.title}}
-      </v-btn>
-    </div>
-
-    <div v-if="isAuthorized && getUserRole === 'teacher'">
-      <v-btn v-for="(item, index) in teacherMenu" :key="index" :to="item.path" large class="mx-1">
-        {{item.title}}
-      </v-btn>
-    </div>
+      <v-toolbar-items v-if="isAuthorized && getUserRole === 'teacher'">
+        <v-btn color="primary" v-for="(item, index) in teacherMenu" :key="index" :to="item.path" elevation="0">
+          {{item.title}}
+        </v-btn>
+      </v-toolbar-items>
+      <div>
+        <v-btn v-if="isAuthorized" color="primary" tile elevation="10" large class="mx-2" @click="logOut">Вийти</v-btn>
+      </div>
+    </v-toolbar>
   </v-app-bar>
 </template>
 
 <script>
-  import {mapGetters} from "vuex";
+import {mapGetters, mapMutations} from "vuex";
 
   export default {
     data: () => ({
@@ -59,6 +64,17 @@
         getUserRole: 'user/getUserRole',
         isAuthorized: 'user/isAuthorized'
       })
+    },
+    methods: {
+      ...mapMutations({
+        unsetUser: 'user/unsetUser',
+        unsetToken: 'user/unsetToken'
+      }),
+      logOut() {
+        this.unsetUser();
+        this.unsetToken();
+        this.$router.push('/sign-in')
+      }
     }
   }
 </script>
