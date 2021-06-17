@@ -96,6 +96,9 @@
             'Content-Type': 'multipart/form-data'
           }
         })
+          .then(res => {
+            alert(res.data.message);
+          })
       }
     }
   }

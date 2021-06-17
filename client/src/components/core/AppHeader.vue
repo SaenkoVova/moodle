@@ -12,7 +12,7 @@
     <v-toolbar color="primary" elevation="0">
       <v-spacer></v-spacer>
       <v-toolbar-items v-if="!isAuthorized">
-        <v-btn v-for="(item, index) in unauthorizedMenu" :key="index" :to="item.path" large>
+        <v-btn color="primary" tile elevation="0" v-for="(item, index) in unauthorizedMenu" :key="index" :to="item.path" large>
           {{item.title}}
         </v-btn>
       </v-toolbar-items>

@@ -53,9 +53,13 @@
           email: this.email,
           password: this.password
         }
-        await this.logIn(payload);
-        await this.loadPersonalInfo();
-        await this.$router.push('/dashboard')
+        try {
+          await this.logIn(payload);
+          await this.loadPersonalInfo();
+          await this.$router.push('/dashboard')
+        } catch (e) {
+          alert(e.response.data.message)
+        }
       }
     }
   }

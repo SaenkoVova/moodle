@@ -1,5 +1,7 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
+const Group = require('../models/Group');
+const ObjectId = require('mongoose').Types.ObjectId;
 
 exports.loadPersonalInfo = async (req, res) => {
     try {
@@ -31,7 +33,6 @@ exports.loadTeachers = async (req, res) => {
 exports.createUser = async (req, res) => {
     try {
         const {firstName, secondName, thirdName, email, role} = req.body;
-        console.log(firstName, secondName, thirdName, email, role)
         const candidate = await User.findOne({email});
         if(candidate) {
             return res.status(400).json({message: 'Користувач уже існує'});
@@ -47,6 +48,44 @@ exports.createUser = async (req, res) => {
         });
         await user.save();
         res.status(200).json({message: 'Корисувача створено'})
+    } catch(e) {
+        console.log(e)
+        res.status(500).json({message: 'Щось пішло не так, спробуйте знову'});
+    }
+}
+
+exports.loadUsersWithInvaluableWorks = async (req, res) => {
+    try {
+        const {groupId, courseId, taskId} = req.query;
+        const group = await Group.findById(groupId);
+        const students = await User.find({
+            role: 'student',
+            "tasks.status": 'performed',
+            "tasks.grade": 0,
+            "tasks.courseId": courseId,
+            "tasks.taskId": taskId,
+        },
+            'firstName secondName thirdName email tasks').where('_id').in(group.students).exec();
+        res.status(200).json(students)
+    } catch(e) {
+        res.status(500).json({message: 'Щось пішло не так, спробуйте знову'});
+    }
+}
+
+exports.grade = async (req, res) => {
+    try {
+        const {taskId, point} = req.body;
+        console.log(taskId, point)
+        let user = await User.updateOne({
+            _id: ObjectId(req.user.userId),
+            "tasks.taskId": taskId
+        }, {
+            $set: {
+                "tasks.$.grade": point
+            }
+        })
+        console.log(user)
+        res.status(200).json({message: 'Оцінено'})
     } catch(e) {
         console.log(e)
         res.status(500).json({message: 'Щось пішло не так, спробуйте знову'});

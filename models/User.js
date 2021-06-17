@@ -14,7 +14,8 @@ const schema = new Schema({
             taskId: {type: ObjetId, ref: 'Task'},
             courseId: {type: ObjetId, ref: 'Course'},
             status: {type: String, required: true},
-            attachments: [{type: String, required: true}]
+            attachments: [{type: String, required: true}],
+            grade: {type: Number, required: true, default: 0}
         }
     ]
 })

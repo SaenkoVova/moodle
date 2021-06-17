@@ -23,6 +23,17 @@ module.exports.loadGroupStudents = async (req, res) => {
     }
 }
 
+module.exports.loadClassTeacher = async (req, res) => {
+    try {
+        const {groupId} = req.query;
+        const group = await Group.findById(groupId);
+        const classTeacher = await User.findById(group.classTeacher, 'email firstName secondName thirdName');
+        res.status(200).json(classTeacher)
+    } catch(e) {
+        res.status(500).json({message: 'Щось пішло не так, спробуйте знову'});
+    }
+}
+
 module.exports.loadGroupCourses = async (req, res) => {
     try {
         const {groupId} = req.query;
@@ -55,3 +66,17 @@ module.exports.createGroup = async (req, res) => {
         res.status(500).json({message: 'Щось пішло не так, спробуйте знову'});
     }
 }
+
+module.exports.loadUserCourses = async (req, res) => {
+    try {
+        const group = await Group.findOne({
+            students: ObjectId(req.user.userId)
+        });
+        const courses = await Course.find({}, 'title').where('_id').in(group.courses).exec()
+        res.status(200).json(courses)
+    } catch(e) {
+        res.status(500).json({message: 'Щось пішло не так, спробуйте знову'});
+    }
+}
+
+

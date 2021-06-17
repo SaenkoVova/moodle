@@ -16,5 +16,15 @@ router.get(
     CourseController.loadCourses
 )
 
+router.get(
+    '/load_course_details',
+    AuthMiddleware,
+    CourseController.loadCourseDetails
+)
 
+router.get(
+    '/load_course_tasks',
+    AuthMiddleware,
+    CourseController.loadCourseTasks
+)
 module.exports = router

@@ -12,11 +12,10 @@ const CourseRoute = require('./routes/course.route');
 const TaskRoute = require('./routes/task.route');
 
 const PORT = config.get('port') || 3000;
-
+app.use("/storage", express.static(__dirname + '/storage'));
 app.use(cors());
 app.use(express.json({ extended: true }));
 app.use(fileUpload());
-app.use(express.static('storage'));
 
 app.use('/api/auth', AuthRoute);
 app.use('/api/user', UserRoute);

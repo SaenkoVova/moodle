@@ -39,3 +39,39 @@ module.exports.createTask = async (req, res) => {
         res.status(500).json({message: 'Щось пішло не так, спробуйте знову'});
     }
 }
+
+module.exports.addAnswer = async (req, res) => {
+    try {
+        const baseUrl = 'localhost:5000/storage/';
+        const {courseId, taskId} = req.query;
+        const {multipartFile} = req.files;
+        const fileName = `${req.user.userId}_${courseId}_${taskId}.${multipartFile.mimetype.split('/')[1]}`
+        await multipartFile.mv(`./storage/answers/${fileName}`);
+        await User.updateOne({
+            _id: ObjectId(req.user.userId),
+            "tasks.taskId": taskId
+        }, {
+            $set: {
+                "tasks.$.attachments": fileName,
+                "tasks.$.status": 'performed'
+            }
+        })
+
+        res.status(200).json({message: 'Завдання відправлено на перевірку'})
+    } catch (e) {
+        console.log(e)
+        res.status(500).json({message: 'Щось пішло не так, спробуйте знову'});
+    }
+}
+
+module.exports.loadTaskDetails = async (req, res) => {
+    try {
+        const {taskId} = req.query;
+        const task = await Task.findById(taskId);
+        const user = await User.findById(req.user.userId);
+        const userTask = user.tasks.find(i => String(i.taskId) === taskId);
+        res.status(200).json({task, status: userTask.status});
+    } catch (e) {
+        res.status(500).json({message: 'Щось пішло не так, спробуйте знову'});
+    }
+}

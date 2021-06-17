@@ -28,4 +28,16 @@ router.get(
     GroupController.loadGroupCourses
 )
 
+router.get(
+    '/load_class_teacher',
+    AuthMiddleware,
+    GroupController.loadClassTeacher
+)
+
+router.get(
+    '/load_user_courses',
+    AuthMiddleware,
+    GroupController.loadUserCourses
+)
+
 module.exports = router

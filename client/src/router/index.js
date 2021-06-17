@@ -7,6 +7,8 @@ import CreateUser from "../views/CreateUser";
 import CreateClass from "../views/CreateClass";
 import CreateCourse from "../views/CreateCourse";
 import GroupDetails from "../views/GroupDetails";
+import CourseDetails from "../views/CourseDetails";
+import TaskDetails from "../views/TaskDetails";
 
 Vue.use(VueRouter)
 
@@ -61,6 +63,24 @@ const routes = [
     },
     props: true,
     component: GroupDetails
+  },
+  {
+    path: '/course/:id',
+    name: 'CourseDetails',
+    meta: {
+      requiredAuth: true
+    },
+    props: true,
+    component: CourseDetails
+  },
+  {
+    path: '/course/:courseId/task/:taskId',
+    name: 'TaskDetails',
+    meta: {
+      requiredAuth: true
+    },
+    props: true,
+    component: TaskDetails
   }
 ]
 

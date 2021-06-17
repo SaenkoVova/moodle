@@ -1,5 +1,9 @@
 <template>
   <v-container fluid class="pa-5">
+    <div v-if="classTeacher">
+      <h2 class="title">Класний керівник</h2>
+      <p>{{`${classTeacher.secondName} ${classTeacher.firstName} ${classTeacher.thirdName} ${classTeacher.email}`}}</p>
+    </div>
     <v-row>
       <v-col>
         <h2 class="title">Список учнів класу</h2>
@@ -47,6 +51,7 @@
               <th class="text-left">
                 Дії
               </th>
+              <th></th>
             </tr>
             </thead>
             <tbody>
@@ -57,6 +62,9 @@
               <td>{{ item.title }}</td>
               <td>
                 <add-task :courseId="item._id" :groupId="id"></add-task>
+              </td>
+              <td>
+                <answers :courseId="item._id" :groupId="id"></answers>
               </td>
             </tr>
             </tbody>
@@ -70,10 +78,11 @@
 <script>
   import http from "../util/http";
   import AddTask from "../components/modals/AddTask";
+  import Answers from "../components/modals/Answers";
 
   export default {
     name: 'GroupDetail',
-    components: {AddTask},
+    components: {Answers, AddTask},
     props: {
       id: {
         type: String,
@@ -82,7 +91,8 @@
     },
     data: () => ({
       students: [],
-      courses: []
+      courses: [],
+      classTeacher: null
     }),
     methods: {
       loadGroupStudents() {
@@ -104,11 +114,22 @@
             .then(res => {
               this.courses = res.data
             })
+      },
+      loadClassTeacher() {
+        http.get('/group/load_class_teacher', {
+          params: {
+            groupId: this.id
+          }
+        })
+            .then(res => {
+              this.classTeacher = res.data
+            })
       }
     },
     mounted() {
       this.loadGroupStudents();
       this.loadGroupCourses();
+      this.loadClassTeacher();
     }
   }
 </script>

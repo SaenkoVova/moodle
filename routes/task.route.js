@@ -10,4 +10,16 @@ router.post(
     TaskController.createTask
 )
 
+router.get(
+    '/load_task_details',
+    AuthMiddleware,
+    TaskController.loadTaskDetails
+)
+
+router.post(
+    '/add_answer',
+    AuthMiddleware,
+    TaskController.addAnswer
+)
+
 module.exports = router

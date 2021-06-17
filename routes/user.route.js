@@ -29,4 +29,16 @@ router.get(
     UserController.loadTeachers
 )
 
+router.get(
+    '/load_users_with_invaluable_works',
+    AuthMiddleware,
+    UserController.loadUsersWithInvaluableWorks
+)
+
+router.post(
+    '/grade',
+    AuthMiddleware,
+    UserController.grade
+)
+
 module.exports = router

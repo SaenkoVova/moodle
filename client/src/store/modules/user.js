@@ -56,6 +56,7 @@ export default {
     },
     getters: {
         isAuthorized: state => state.token,
-        getUserRole: state => state.user?.role
+        getUserRole: state => state.user?.role,
+        getUser: state => state.user
     }
 }
